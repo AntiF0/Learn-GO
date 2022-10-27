@@ -1,16 +1,25 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"greetings"
+	"os"
 
-	"rsc.io/quote"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func main() {
-	fmt.Println("Hello, World!")
-	fmt.Println(quote.Go())
+func GetDatabase() (*sql.DB, error) {
+	db, err := sql.Open("mysql", os.Getenv("DSN"))
+	return db, err
+}
 
-	message := greetings.Hello("Gladys")
-	fmt.Println(message)
+func main() {
+	db, err := GetDatabase()
+	if err != nil {
+		panic(err)
+	}
+	if err := db.Ping(); err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected to PlanetScale!")
 }
